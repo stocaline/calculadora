@@ -16,7 +16,7 @@ for (let key of keys){
             input = input.slice(0, -1);
             displayInput.innerHTML = clearInput(input);
         } else if(value == "=") {
-            let result = eval(input);
+            let result = eval(perpareInput(input));
 
             displayOutput.innerHTML = clearOutput(result);
         } else if(value == "brackets") {
@@ -37,8 +37,10 @@ for (let key of keys){
 
             displayInput.innerHTML = clearInput(input);
         } else {
-            input += value;
-            displayInput.innerHTML = clearInput(input);
+            if(validateInput(value)){
+                input += value;
+                displayInput.innerHTML = clearInput(input);
+            }
         }
 
     })
@@ -62,7 +64,7 @@ function clearInput(input) {
         } else if (inputArray[i] == ")"){
             inputArray[i] = `<span class="brackets">)</span>`;
         } else if (inputArray[i] == "%"){
-            inputArray[i] = `<span class="operator">%</span>`;
+            inputArray[i] = `<span class="brackets">%</span>`;
         }
     }
 
@@ -88,4 +90,35 @@ function clearOutput(output) {
     }
 
     return outputArray.join("");
+}
+
+function validateInput(value){
+    let lastInput = input.slice(-1);
+    let operator = ["+", "-", "*", "/"]
+
+    if(value == "." && lastInput == "."){
+        return false;
+    }
+
+    if(operator.includes(value)){
+        if(operator.includes(lastInput)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    return true;
+}
+
+function perpareInput(input){
+    let inputArray = input.split("");
+
+    for(let i = 0; i < inputArray.length; i++){
+        if(inputArray[i] == "%"){
+            inputArray[i] = "/100";
+        }
+    }
+
+    return inputArray.join("");
 }
